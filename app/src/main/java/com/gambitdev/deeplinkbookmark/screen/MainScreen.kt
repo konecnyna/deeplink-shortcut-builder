@@ -79,8 +79,7 @@ fun MainScreen(addShortcut: (Drawable, String, String) -> Unit) {
                         val label = labelState.value
                         val link = linkState.value
 
-                        addShortcut(
-ContextCompat.getDrawable(context, selectedItem.value
+                        addShortcut(ContextCompat.getDrawable(context, selectedItem.value
                             )!!, label, link
                         )
                     }, modifier = Modifier.align(Alignment.End)
