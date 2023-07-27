@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import com.gambitdev.deeplinkbookmark.screen.MainScreen
 import com.gambitdev.deeplinkbookmark.ui.theme.DeeplinkBookmarkTheme
 
 enum class CustomIcons(val label: String, @DrawableRes val res: Int) {
@@ -37,90 +38,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val context: Context = this
-
-        setContent {
-            DeeplinkBookmarkTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-
-                    val labelState = remember { mutableStateOf("") }
-                    val linkState = remember { mutableStateOf("") }
-                    val items = CustomIcons.values()
-                    val selectedItem = remember { mutableStateOf(items[0]) }
-
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        TextField(
-                            value = labelState.value,
-                            onValueChange = { labelState.value = it },
-                            label = { Text(text = "Label") },
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        TextField(
-                            value = linkState.value,
-                            onValueChange = { linkState.value = it },
-                            label = { Text(text = "Deeplink") },
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        DropdownMenuBox(items = items, selectedItem = selectedItem)
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Button(
-                            onClick = {
-                                val label = labelState.value
-                                val link = linkState.value
-                                addShortcut(
-                                    drawable = ContextCompat.getDrawable(
-                                        context,
-                                        selectedItem.value.res
-                                    )!!,
-                                    label = label,
-                                    link = link
-                                )
-                            },
-                            modifier = Modifier.align(Alignment.End)
-                        ) {
-                            Text(text = "Submit")
-                        }
-
-                    }
-                }
-            }
-        }
+        setContent { DeeplinkBookmarkTheme { MainScreen(::addShortcut) } }
     }
 
-    @Composable
-    fun DropdownMenuBox(items: Array<CustomIcons>, selectedItem: MutableState<CustomIcons>) {
-        var expanded by remember { mutableStateOf(false) }
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.onBackground)
-                .wrapContentSize(Alignment.TopStart)
-        ) {
-            Text(
-                text = selectedItem.value.label,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable(onClick = { expanded = true })
-                    .padding(16.dp)
-            )
-            DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                items.forEach { item ->
-                    DropdownMenuItem(
-                        text = { Text(item.label) },
-                        onClick = {
-                            selectedItem.value = item
-                            expanded = false
-                        })
-                }
-            }
-        }
-    }
 
     private fun addShortcut(drawable: Drawable, label: String, link: String) {
         val shortcutManager = getSystemService(Context.SHORTCUT_SERVICE) as ShortcutManager
@@ -157,15 +77,3 @@ class MainActivity : ComponentActivity() {
 
 }
 
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    DeeplinkBookmarkTheme {
-        Greeting("Android")
-    }
-}
