@@ -35,7 +35,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerVersion '1.5.1'
+//        kotlinCompilerVersion '1.5.1'
         kotlinCompilerExtensionVersion '1.5.1'
     }
     packagingOptions {
