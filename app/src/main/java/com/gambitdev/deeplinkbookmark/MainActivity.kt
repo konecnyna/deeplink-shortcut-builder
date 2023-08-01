@@ -42,15 +42,15 @@ class MainActivity : ComponentActivity() {
     }
 
 
-    private fun addShortcut(drawable: Drawable, label: String, link: String) {
+    private fun addShortcut(bitmap: Bitmap, label: String, link: String) {
         val shortcutManager = getSystemService(Context.SHORTCUT_SERVICE) as ShortcutManager
-        val bitmap = Bitmap.createBitmap(
-            drawable.intrinsicWidth,
-            drawable.intrinsicHeight, Bitmap.Config.ARGB_8888
-        )
-        val canvas = Canvas(bitmap)
-        drawable.setBounds(0, 0, canvas.width, canvas.height)
-        drawable.draw(canvas)
+//        val bitmap = Bitmap.createBitmap(
+//            drawable.intrinsicWidth,
+//            drawable.intrinsicHeight, Bitmap.Config.ARGB_8888
+//        )
+//        val canvas = Canvas(bitmap)
+//        drawable.setBounds(0, 0, canvas.width, canvas.height)
+//        drawable.draw(canvas)
         // Convert the Bitmap into an Icon
         val icon = Icon.createWithBitmap(bitmap)
         val shortcut = ShortcutInfo.Builder(this, label)
