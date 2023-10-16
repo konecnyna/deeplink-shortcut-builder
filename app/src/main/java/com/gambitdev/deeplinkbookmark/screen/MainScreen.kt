@@ -6,13 +6,17 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.*
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -83,40 +87,54 @@ fun MainScreen(addShortcut: (Bitmap, String, String) -> Unit) {
                 Button(onClick = {
                     coroutineScope.launch {
                         bitmap.value = loadImageFromUrl(
-                            context = context,
-                            imageUrl = imageUrlState.value
+                            context = context, imageUrl = imageUrlState.value
                         )
                     }
                 }) {
                     Text("Load url")
                 }
 
-                Column(
-                    modifier = Modifier.padding(top = 16.dp).fillMaxWidth().background(Color.LightGray),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                Text(modifier = Modifier.padding(top = 16.dp, bottom = 16.dp), text = "Preview:")
+                Divider()
+                Row(
+                    modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center
                 ) {
-                    if (bitmap.value != null) {
-                        Image(
-                            modifier = Modifier.size(64.dp),
-                            bitmap = bitmap.value!!.asImageBitmap(),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop
-                        )
-                    } else {
-                        Image(
-                            painter = painterResource(R.drawable.home),
-                            modifier = Modifier.size(64.dp),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop
-                        )
+
+                    Column(
+                        modifier = Modifier
+                            .padding(top = 16.dp, bottom = 16.dp),
+//                            .drawBehind {
+//                                drawCircle(
+//                                    color = Color.LightGray,
+//                                    radius = this.size.maxDimension
+//                                )
+//                            },
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+
+                        if (bitmap.value != null) {
+                            Image(
+                                modifier = Modifier.size(64.dp),
+                                bitmap = bitmap.value!!.asImageBitmap(),
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop
+                            )
+                        } else {
+                            Image(
+                                painter = painterResource(R.drawable.home),
+                                modifier = Modifier.size(64.dp),
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+
+                        Text(labelState.value)
+
                     }
-
-                    Text(labelState.value)
-
                 }
 
-
+                Divider()
 //                Button(onClick = {
 //                    coroutineScope.launch { bottomSheetScaffoldState.bottomSheetState.expand() }
 //                }) {
@@ -124,8 +142,7 @@ fun MainScreen(addShortcut: (Bitmap, String, String) -> Unit) {
 //                }
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
-                    enabled = bitmap.value !== null && linkState.value.isNotEmpty(),
-                    onClick = {
+                    enabled = bitmap.value !== null && linkState.value.isNotEmpty(), onClick = {
                         val label = labelState.value
                         val link = linkState.value
                         val bm = bitmap.value
